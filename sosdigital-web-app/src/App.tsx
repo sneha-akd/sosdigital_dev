@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useState, useEffect } from "react";
+import Studentreport from "./Studentreport";
+import Testclock from "./Testclock";
+import Test from "./Test";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+
+export default function App() {
+  const [activetest, setactivetest] = useState({ data: [] });
+  const [finished, setfinished] = useState(false);
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
+  const fetchInfo = () => {
+    return fetch(
+      "https://sosdigital.in/views/test_view/?user_id=2&test_id=31&schedule_id=686"
+    )
+      .then((res) => res.json())
+      .catch((e) => {
+        console.log("Error while fetching test_data", e);
+      })
+      .then((d) => {
+        if (d !== undefined) {
+          setactivetest(d);
+          // console.log("First Fetch Info", d);
+        }
+      });
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
 
-export default App
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route
+              path="/testclock"
+              element={<Testclock finished={finished} />}
+            />
+            <Route path="/test" element={<Test setfinished={setfinished} />} />
+            <Route path="/studentreport" element={<Studentreport />} />
+          </Routes>
+        </div>
+      </Router>
+    </>
+  );
+}
