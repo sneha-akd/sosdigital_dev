@@ -1,45 +1,54 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Studentreport() {
-  const [correctanswer, setcorrectanswer] = useState("");
+function Studentreport(props) {
+  const [correctanswer, setcorrectanswer] = useState(null);
+
+  const navigator = useNavigate();
 
   const fetchInfo = () => {
-    return fetch(
-      " https://sosdigital.in/dev2_views/report/?user_id=2&schedule_id=711"
+    fetch(
+      `https://sosdigital.in/dev2_views/report/?user_id=${props.userid}&schedule_id=${props.scheduleid}`
     )
-      .then((res) => res.json())
-      .catch((e) => {
-        console.log("Error while fetching", e);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch: ${res.statusText} (${res.status})`);
+        }
+        return res.json();
       })
-      .then((d) => {
-        console.log(d);
-        setcorrectanswer(d);
-        // });
-        // console.log("fetchinfo", d);
+      .then((data) => {
+        setcorrectanswer(data);
+      })
+      .catch((e) => {
+        console.error("Error fetching data:", e);
       });
   };
 
+  // Effect to trigger fetchInfo when `userid` or `scheduleid` change
   useEffect(() => {
-    fetchInfo();
-  }, []);
+    if (props.userid && props.scheduleid) {
+      fetchInfo();
+    }
+  }, [props.userid, props.scheduleid]);
 
-  const navigator = useNavigate();
   return (
     <>
       <button onClick={() => navigator("/testclock")}>Go to Home Page</button>
       <div>Quiz Final Result</div>
 
-      <div>
-        Attempted Question :{correctanswer.attempted}
-        <br />
-        Correct Answer : {correctanswer.correct} <br />
-        Incorrect Answer :{correctanswer.incorrect} <br />
-        Total Question : {correctanswer.total}
-        <br />
-        Unattempted Question :{correctanswer.unattempted}
-      </div>
+      {correctanswer ? (
+        <div>
+          <p>Attempted Questions: {correctanswer.attempted}</p>
+          <p>Correct Answers: {correctanswer.correct}</p>
+          <p>Incorrect Answers: {correctanswer.incorrect}</p>
+          <p>Total Questions: {correctanswer.total}</p>
+          <p>Unattempted Questions: {correctanswer.unattempted}</p>
+        </div>
+      ) : (
+        <div>No data available</div> // Handle case when `correctanswer` is null or empty
+      )}
     </>
   );
 }
+
 export default Studentreport;

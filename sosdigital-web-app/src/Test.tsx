@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { TestpageContext } from "./store/testpage-store";
 import Answer, { Question_text } from "./Answer";
 import Buttons from "./Buttons";
@@ -10,28 +10,44 @@ function Test(props) {
   const [activetest, setactivetest] = useState({ data: [] });
   const [questionindex, setquestionindex1] = useState(0);
   const [clickoption, setclickoption] = useState(null);
-
   const [selectedindex, setselectedindex] = useState({});
+
+
 
   const exported_user_id = 2;
 
-  const changenext = () => {
+  const changesavenext = () => {
     if (activetest.data.length && questionindex < activetest.data.length - 1)
       setquestionindex1(questionindex + 1);
     setclickoption(selectedindex[questionindex + 1]);
   };
+
+
+
+  const changenext = () => {
+    if (activetest.data.length && questionindex < activetest.data.length - 1) {
+      setquestionindex1(questionindex + 1);
+      setclickoption(selectedindex[questionindex + 1]);
+    }
+  };
+
+
 
   const changeprev = () => {
     if (activetest.data.length && questionindex > 0)
       setquestionindex1(questionindex - 1);
     setclickoption(selectedindex[questionindex - 1]);
   };
+
   const changefinish = async (index: number) => {
     setactivetest({
       data: [],
     });
     props.setfinished(true);
     navigator("/Studentreport");
+
+
+
 
     //setshowresult(true);
 
@@ -45,9 +61,9 @@ function Test(props) {
       const answers =
         selectedAnswerIndex !== null
           ? [
-              activetest?.data[parseInt(qindex)]?.answers[selectedAnswerIndex]
-                ?.id,
-            ]
+            activetest?.data[parseInt(qindex)]?.answers[selectedAnswerIndex]
+              ?.id,
+          ]
           : [];
 
       // console.log(qindex, "Q:", questionid, " A:", answers);
@@ -158,27 +174,31 @@ function Test(props) {
   }, []);
 
   const fetchInfo = () => {
-    return fetch(
-      "https://sosdigital.in/views/test_view/?user_id=2&test_id=53&schedule_id=711"
-    )
+    // Dynamically build the URL based on the function's parameters
+    const url = `https://sosdigital.in/views/test_view/?user_id=${props.userid}&test_id=${props.testid}&schedule_id=${props.scheduleid}`;
+
+    return fetch(url)
       .then((res) => res.json())
       .catch((e) => {
         console.log("Error while fetching test_data", e);
       })
       .then((d) => {
         if (d !== undefined) {
-          // check schedule end first
           setactivetest(d);
-          // console.log("First Fetch Info", d);
         }
       });
   };
+
+
+
 
   const navigator = useNavigate();
   return (
     <TestpageContext.Provider value={{ activetest }}>
       <>
         <div>
+          <p> Test Id : {props.testid}</p>
+          <p> Schedule Id : {props.scheduleid}</p>
           <button
             onClick={() => {
               navigator("/testclock");
@@ -187,7 +207,7 @@ function Test(props) {
             Go to Home Page
           </button>
         </div>
-        <Quiztimer/>
+        <Quiztimer />
         <div className="Test">
           <Question_text questionindex={questionindex} />
           <Answer
@@ -205,7 +225,9 @@ function Test(props) {
               activetest &&
               activetest.data &&
               questionindex === activetest.data.length - 1
+
             }
+            onsaveNext={changesavenext}
           />
         </div>
       </>

@@ -25,3 +25,4 @@ dist-ssr
 
 # web-app exlcudes
 *-lock.json
+.vite/

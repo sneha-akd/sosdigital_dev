@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function getTarik(dateVar) {
+function getTarik(dateVar: Date): string {
   return (
     dateVar.getDate() +
     "-" +
@@ -10,52 +10,45 @@ function getTarik(dateVar) {
     dateVar.getFullYear()
   );
 }
-function getSamay(dateVar) {
+function getSamay(dateVar: Date): string {
   return (
     dateVar.getHours() + ":" + dateVar.getMinutes() + ":" + dateVar.getSeconds()
   );
 }
 
-//function getSamay(dateVar) {
-//return (
-//dateVar.getHours() + ":" + dateVar.getMinutes() + ":" + dateVar.getSeconds()
-//);
-//}
+type activeTestType = {
+  test_id: number;
+  title: string;
+  subtitle: string;
+  schedule_type: string;
+  schedule_id: number;
+  schedule_start: string;
+  schedule_end: string;
+  finished: boolean;
+}
+type activeTestResponseType = {
+  data: activeTestType[];
+}
 
-function Testclock(props) {
-  const [activetest, setactivetest] = useState({
-    data: [
-      {
-        schedule_start: "test",
-        schedule_end: "test",
-      },
-    ],
+type TestclockPropsType = {
+  userid: number;
+  finished: boolean;
+  settestid: React.Dispatch<React.SetStateAction<undefined>>;
+  setscheduleid: React.Dispatch<React.SetStateAction<undefined>>;
+}
+function Testclock(props: TestclockPropsType) {
+  const [activetest, setactivetest] = useState<activeTestResponseType>({
+    data: [],
   });
-  const [tarik, setTarik] = useState(getTarik(new Date()));
-  const [schedule_start, setSchSt] = useState(getSamay(new Date()));
-  const [schedule_end, setSchend] = useState(getSamay(new Date()));
-  const [testStarted, setTestStarted] = useState(false); // State to control whether the test has started
+
   const navigate = useNavigate();
-
-  // console.log(activetest);
-  /*useEffect(() => {
-    if (activetest.data.length) {
-      setTarik(getTarik(new Date(activetest.data[0].schedule_start)));
-      setSchSt(getSamay(new Date(activetest.data[0].schedule_start)));
-      setSchend(getSamay(new Date(activetest.data[0].schedule_end)));
-
-      if (new Date() >= startDate) {
-        setCanEnter(true);
-      }
-    }
-  }, [activetest]);*/
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
   const fetchInfo = () => {
-    return fetch("https://sosdigital.in/dev2_views/active_test/?user_id=1")
+    return fetch(`https://sosdigital.in/dev2_views/active_test/?user_id=${props.userid}`)
       .then((res) => res.json())
       .catch((e) => {
         console.log("Error while fetching", e);
@@ -63,61 +56,51 @@ function Testclock(props) {
       .then((d) => {
         if (d.data && d.data.length) {
           setactivetest(d);
-          console.log("fetchInfo", d);
+          // console.log("fetchInfo", d);
         }
       });
   };
 
-  useEffect(() => {
-    if (activetest.data.length) {
-      const startDate = new Date(activetest.data[0].schedule_start);
-      const endDate = new Date(activetest.data[0].schedule_end);
-
-      setTarik(getTarik(startDate));
-      setSchSt(getSamay(startDate));
-      setSchend(getSamay(endDate));
-
-      // Enable "Enter" button based on time comparison
-    }
-  }, [activetest]);
-
-  const startTest = () => {
+  const startTest = (test: activeTestType) => {
     const currenttime = new Date();
-    const starttime = new Date(activetest.data[0].schedule_start);
-    const endtime = new Date(activetest.data[0].schedule_end);
+    const starttime = new Date(test.schedule_start);
+    const endtime = new Date(test.schedule_end);
     if (currenttime <= starttime) {
       // If the current time is less than or equal to the schedule start time, don't start the test
       alert("Test cannot start yet.");
-    } else if (currenttime >= endtime) {
+    } else if (currenttime > endtime) {
       // If the current time is greater than the schedule end time, the test has ended
       alert("Test time has ended.");
       // Optional: You could clear the test or navigate elsewhere if needed
       navigate("/Studentreport"); // or some other route to show that the test is over
     } else {
       // If the current time is between startTime and endTime, allow the test to start
-      setTestStarted(true); // Start the test when the button is clicked
+      props.settestid(test.test_id);
+      props.setscheduleid(test.schedule_id);
+
       navigate("/test"); // Navigate to the test route
     }
   };
 
   return (
     <>
-      <div className="card w-75 mb-3" style={{ margin: "30px" }}>
-        <div className="card-body">
-          <h1 className="card-title">Test</h1>
-          <p className="card-text"> Start Time:{schedule_start} </p>
-          <h6> End Time :{schedule_end} </h6>
-          <h6>Date : {tarik}</h6>
-          <button
-            onClick={startTest}
-            className="btn btn-primary"
-            disabled={props.finished}
-            
-          >
-            Enter
-          </button>
+      {activetest && activetest.data.map((test: activeTestType, index: number) => {
+        return <div className="card col-md-4 mb-3 " key={index} style={{ margin: "50px" }}>
+          <div className="card-body">
+            <h1 className="card-title">Test</h1>
+            <p className="card-text"> Start Time:{getSamay(new Date(test.schedule_start))} </p>
+            <h6> End Time :{getSamay(new Date(test.schedule_end))} </h6>
+            <h6>Date : {getTarik(new Date(test.schedule_start))}</h6>
+            <button
+              onClick={() => startTest(test)}
+              className="btn btn-primary"
+              disabled={props.finished}
+            >
+              Enter
+            </button>
+          </div>
         </div>
-      </div>
+      })}
     </>
   );
 }
