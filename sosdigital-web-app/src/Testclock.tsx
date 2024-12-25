@@ -33,8 +33,8 @@ type activeTestResponseType = {
 type TestclockPropsType = {
   userid: number;
   finished: boolean;
-  settestid: React.Dispatch<React.SetStateAction<undefined>>;
-  setscheduleid: React.Dispatch<React.SetStateAction<undefined>>;
+  settestid: React.Dispatch<React.SetStateAction<number>>;
+  setscheduleid: React.Dispatch<React.SetStateAction<number>>;
 }
 function Testclock(props: TestclockPropsType) {
   const [activetest, setactivetest] = useState<activeTestResponseType>({
@@ -83,11 +83,11 @@ function Testclock(props: TestclockPropsType) {
   };
 
   return (
-    <>
+    <div className="row">
       {activetest && activetest.data.map((test: activeTestType, index: number) => {
         return <div className="card col-md-4 mb-3 " key={index} style={{ margin: "50px" }}>
           <div className="card-body">
-            <h1 className="card-title">Test</h1>
+            <h1 className="card-title">{test.title}</h1>
             <p className="card-text"> Start Time:{getSamay(new Date(test.schedule_start))} </p>
             <h6> End Time :{getSamay(new Date(test.schedule_end))} </h6>
             <h6>Date : {getTarik(new Date(test.schedule_start))}</h6>
@@ -101,7 +101,7 @@ function Testclock(props: TestclockPropsType) {
           </div>
         </div>
       })}
-    </>
+    </div>
   );
 }
 export default Testclock;

@@ -1,10 +1,18 @@
 
 
-function Buttons({ onNext, onPrev, onFinish, isFirst, isLast, onClear, onsaveNext }) {
+function Buttons(props: {
+  onNext: () => void,
+  onPrev: () => void,
+  onFinish: () => void,
+  isFirst: boolean,
+  isLast: boolean,
+  onClear: () => void,
+  onsaveNext: () => void,
+}) {
   return (
     <div>
       <div className="additional-buttons">
-        <button type="button" className="btn btn-success" onClick={onsaveNext}>
+        <button type="button" className="btn btn-success" onClick={() => props.onsaveNext()}>
           Save & Next
         </button>
         <button type="button" className="btn btn-warning">
@@ -13,7 +21,7 @@ function Buttons({ onNext, onPrev, onFinish, isFirst, isLast, onClear, onsaveNex
         <button type="button" className="btn btn-info">
           Mark For Review & Next
         </button>
-        <button type="button" className="btn btn-light" onClick={onClear}>
+        <button type="button" className="btn btn-light" onClick={props.onClear}>
           Clear Response
         </button>
       </div>
@@ -24,8 +32,8 @@ function Buttons({ onNext, onPrev, onFinish, isFirst, isLast, onClear, onsaveNex
 
             type="button"
             className="btn btn-outline-primary"
-            onClick={onPrev}
-            disabled={isFirst}
+            onClick={props.onPrev}
+            disabled={props.isFirst}
           >
             <i className="bi bi-chevron-double-left"></i>Previous
           </button>
@@ -33,8 +41,8 @@ function Buttons({ onNext, onPrev, onFinish, isFirst, isLast, onClear, onsaveNex
 
             type="button"
             className="btn btn-outline-success"
-            onClick={onNext}
-            disabled={isLast}
+            onClick={props.onNext}
+            disabled={props.isLast}
           >
 
             Next
@@ -44,13 +52,13 @@ function Buttons({ onNext, onPrev, onFinish, isFirst, isLast, onClear, onsaveNex
           <button
             type="button"
             className="btn btn-outline-danger"
-            onClick={onFinish}
+            onClick={props.onFinish}
           >
-            Finish
+            Submit
           </button>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }
 

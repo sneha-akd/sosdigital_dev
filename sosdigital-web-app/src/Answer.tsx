@@ -3,7 +3,9 @@
 import { TestpageContext } from "./store/testpage-store";
 import { useContext } from "react";
 
-function Question_text(props) {
+function Question_text(props: {
+  questionindex: number,
+}) {
   const activeTestContext = useContext(TestpageContext);
   let question =
     activeTestContext?.activetest?.data[props.questionindex]?.descr;
@@ -21,7 +23,11 @@ function Question_text(props) {
   );
 }
 
-function Answer(props) {
+function Answer(props: {
+  questionindex: number,
+  onuserselectionchange: (questionindex: number, answewrindex: number, checked: boolean) => void,
+  userselection: (number | undefined)[],
+}) {
   const activeTestContext = useContext(TestpageContext);
   // console.log("Answer", activeTestContext);
   // {`checkbox ${
@@ -33,27 +39,24 @@ function Answer(props) {
   return (
     answers !== undefined && (
       <div>
-        {answers.map((answer, index) => {
+        {answers.map((answer: { id: number, descr: string }, index: number) => {
           return (
             <div key={answer.id}>
               <input
                 //onChange={() => props.setChecked(!checked)}
                 onChange={(e) => {
-                  props.setclickoption(index, e.target.checked);
-                  //props.setChecked(!checked);
+                  // props.setclickoption(index, e.target.checked);
 
-                  //props.setclickoption(index, e.target.checked);
-                  //console.log(e.target.checked);
-                  props.saveanswer(index, e.target.checked);
-                  
+                  props.onuserselectionchange(props.questionindex, index, e.target.checked);
+
                 }}
                 type="checkbox"
-                id={answer.id}
+                id={answer.id.toString()}
                 name=""
                 value=""
-                checked={props.clickoption == index}
+                checked={props.userselection[props.questionindex] === index}
               />
-              <label htmlFor={answer.id}>
+              <label htmlFor={answer.id.toString()}>
                 <span
                   dangerouslySetInnerHTML={{
                     __html: answer.descr,

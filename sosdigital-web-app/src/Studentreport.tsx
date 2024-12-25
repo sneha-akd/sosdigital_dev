@@ -1,8 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Studentreport(props) {
-  const [correctanswer, setcorrectanswer] = useState(null);
+function Studentreport(props: {
+  userid: number,
+  scheduleid: number,
+}) {
+  const [correctanswer, setcorrectanswer] = useState<{
+    attempted: number,
+    correct: number,
+    incorrect: number,
+    total: number,
+    unattempted: number,
+  } | null>(null);
 
   const navigator = useNavigate();
 

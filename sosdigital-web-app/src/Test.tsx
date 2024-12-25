@@ -1,67 +1,92 @@
 import { useState, useEffect } from "react";
-import { TestpageContext } from "./store/testpage-store";
+import { ActiveTestType, TestpageContext } from "./store/testpage-store";
 import Answer, { Question_text } from "./Answer";
 import Buttons from "./Buttons";
 import Quiztimer from "./Quiztimer";
 import { useNavigate } from "react-router-dom";
 
-function Test(props) {
+
+function Test(props: {
+  userid: number,
+  testid: number,
+  scheduleid: number
+  , setfinished: (_: boolean) => void
+}) {
   //const { activetest, testStarted } = useContext(TestpageContext);
-  const [activetest, setactivetest] = useState({ data: [] });
+  const [activetest, setactivetest] = useState<ActiveTestType | undefined>(undefined);
   const [questionindex, setquestionindex1] = useState(0);
-  const [clickoption, setclickoption] = useState(null);
-  const [selectedindex, setselectedindex] = useState({});
-
-
+  const [userselection, setuserselection] = useState<(number | undefined)[]>([]);
 
   const exported_user_id = 2;
 
-  const changesavenext = () => {
-    if (activetest.data.length && questionindex < activetest.data.length - 1)
-      setquestionindex1(questionindex + 1);
-    setclickoption(selectedindex[questionindex + 1]);
-  };
+  // RESPONSIBILITY FUNCTIONS
+  const manageuserselections = (questionindex: number, answerindex: number, checked: boolean) => {
+    setuserselection((olddata) => {
+      let newdata = [...olddata];
+      newdata[questionindex] = checked ? answerindex : undefined;
+      return newdata;
+    });
+  }
 
+  const managequestionnavigation = (newquestionindex: number) => {
+    if (activetest?.data.length && newquestionindex < activetest.data.length - 1 && newquestionindex >= 0) {
+      setquestionindex1(newquestionindex);
+    }
+  }
 
+  const postanswer = async (answerindex: number | undefined) => {
 
-  const changenext = () => {
-    if (activetest.data.length && questionindex < activetest.data.length - 1) {
-      setquestionindex1(questionindex + 1);
-      setclickoption(selectedindex[questionindex + 1]);
+    try {
+      const answer_data = {
+        schedule_id: activetest?.schedule_id,
+        user_id: exported_user_id,
+        test_id: activetest?.test_id,
+        data: [
+          {
+            answers: answerindex !== undefined ? [activetest?.data[questionindex]?.answers[answerindex]?.id] : [],
+            question: activetest?.data[questionindex]?.id,
+          },
+        ],
+      };
+
+      // console.log(answer_data);
+      // send request to backend and wait for the response
+      const response = await fetch(
+        "https://sosdigital.in/dev_views/response/",
+        {
+          method: "POST",
+          // Data will be serialized and sent as json
+          body: JSON.stringify(answer_data),
+          // tell the server we're sending JSON
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log("request sent", response);
+      if (!response.ok) {
+        // server returned a status code other than 200-299 --> something went wrong
+        // console.log("fetch failed");
+        console.log(await response.text());
+      }
+    } catch (error) {
+      // an error occured
+      console.log("Fetch Error", error);
     }
   };
 
-
-
-  const changeprev = () => {
-    if (activetest.data.length && questionindex > 0)
-      setquestionindex1(questionindex - 1);
-    setclickoption(selectedindex[questionindex - 1]);
-  };
-
-  const changefinish = async (index: number) => {
-    setactivetest({
-      data: [],
-    });
-    props.setfinished(true);
-    navigator("/Studentreport");
-
-
-
-
-    //setshowresult(true);
-
-    // console.log("onfinish", selectedindex);
+  const postAllAnswers = async () => {
     let report_data = [];
-    for (const qindex in selectedindex) {
+    // for (const qindex in userselection) {
+    for (var qindex = 0; qindex < (activetest?.data.length ?? 0); ++qindex) {
       // console.log("on finish iter", selectedindex[qid]);
-      const questionid = activetest?.data[parseInt(qindex)]?.id;
-      const selectedAnswerIndex = selectedindex[qindex];
+      const questionid = activetest?.data[qindex]?.id;
+      const selectedAnswerIndex = userselection[qindex];
 
       const answers =
-        selectedAnswerIndex !== null
+        selectedAnswerIndex !== undefined
           ? [
-            activetest?.data[parseInt(qindex)]?.answers[selectedAnswerIndex]
+            activetest?.data[qindex]?.answers[selectedAnswerIndex]
               ?.id,
           ]
           : [];
@@ -97,78 +122,53 @@ function Test(props) {
       );
       // console.log("request sent", response);
       if (!response.ok) {
-        // server returned a status code other than 200-299 --> something went wrong
-        // console.log("fetch failed");
-        // console.log(await response.text());
+        // return Promise.reject(`POST failed with ${response.status} ${response.text()}`);
       }
+      // return Promise.resolve("POST success");
     } catch (error) {
       // an error occured
-      console.log("Fetch Error", error);
+      // return Promise.reject(`POST failed with ${error}`);
     }
+  }
+
+  const changeclear = () => {
+    // Reset selected option for current question
+    manageuserselections(questionindex, 0, false);
+    postanswer(undefined);
   };
 
-  const setAnswer = (index: number, checked: boolean) => {
-    setclickoption(checked ? index : -1);
-
-    // console.log(setclickoption);
+  const handlesavenext = () => {
+    const answerindex: number | undefined = userselection[questionindex];
+    postanswer(answerindex);  // Save the answer before moving to next
+    managequestionnavigation(questionindex + 1);
   };
 
-  const saveanswer = async (answerindex: number, checked: boolean) => {
-    // CR: Handle unselection of all answers
-    setselectedindex((olddata) => {
-      let newdata = { ...olddata };
+  useEffect(() => {
+    fetchInfo();
+  }, []);
 
-      newdata[questionindex] = checked ? answerindex : null;
-      // console.log("saveanswer", newdata);
-      return {
-        ...newdata,
-      };
-    });
-
-    // console.log("save answer set selected index done");
-    try {
-      const answer_data = {
-        schedule_id: activetest?.schedule_id,
-        user_id: exported_user_id,
-        test_id: activetest?.test_id,
-        data: [
-          {
-            //key: checked ? index : null,
-
-            answers: checked
-              ? [activetest?.data[questionindex]?.answers[answerindex]?.id]
-              : [],
-
-            question: activetest?.data[questionindex]?.id,
-          },
-        ],
-      };
-
-      // console.log(answer_data);
-      // send request to backend and wait for the response
-      const response = await fetch(
-        "https://sosdigital.in/dev_views/response/",
-        {
-          method: "POST",
-          // Data will be serialized and sent as json
-          body: JSON.stringify(answer_data),
-          // tell the server we're sending JSON
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log("request sent", response);
-      if (!response.ok) {
-        // server returned a status code other than 200-299 --> something went wrong
-        // console.log("fetch failed");
-        console.log(await response.text());
-      }
-    } catch (error) {
-      // an error occured
-      console.log("Fetch Error", error);
-    }
+  const handlenext = () => {
+    managequestionnavigation(questionindex + 1);
   };
+
+  const handleprev = () => {
+    managequestionnavigation(questionindex - 1);
+  };
+
+  // WORK DONE BY MAJHA NAVRA
+  const handleuserselectionchange = (questionindex: number, answerindex: number, checked: boolean) => {
+    manageuserselections(questionindex, answerindex, checked);
+  }
+
+  const changefinish = async () => {
+    // await postAllAnswers();
+    setactivetest(undefined);
+    props.setfinished(true);
+    navigator("/Studentreport");
+
+    postAllAnswers();
+  };
+
   useEffect(() => {
     fetchInfo();
   }, []);
@@ -189,50 +189,46 @@ function Test(props) {
       });
   };
 
-
-
-
   const navigator = useNavigate();
-  return (
-    <TestpageContext.Provider value={{ activetest }}>
-      <>
-        <div>
-          <p> Test Id : {props.testid}</p>
-          <p> Schedule Id : {props.scheduleid}</p>
-          <button
-            onClick={() => {
-              navigator("/testclock");
-            }}
-          >
-            Go to Home Page
-          </button>
-        </div>
-        <Quiztimer />
-        <div className="Test">
-          <Question_text questionindex={questionindex} />
-          <Answer
-            clickoption={clickoption}
-            setclickoption={setAnswer}
-            saveanswer={saveanswer}
-            questionindex={questionindex}
-          />
-          <Buttons
-            onNext={changenext}
-            onPrev={changeprev}
-            onFinish={changefinish}
-            isFirst={questionindex === 0}
-            isLast={
-              activetest &&
-              activetest.data &&
-              questionindex === activetest.data.length - 1
+  return activetest && <TestpageContext.Provider value={{ activetest }}>
+    <>
+      <div>
+        <p> Test Id : {props.testid}</p>
+        <p> Schedule Id : {props.scheduleid}</p>
+        <button
+          onClick={() => {
+            navigator("/testclock");
+          }}
+        >
+          Go to Home Page
+        </button>
+      </div>
+      <Quiztimer />
+      <div className="Test">
+        <Question_text questionindex={questionindex} />
+        <Answer
+          userselection={userselection}
+          onuserselectionchange={handleuserselectionchange}
+          questionindex={questionindex}
+        />
+        <Buttons
+          onNext={handlenext}
+          onPrev={handleprev}
+          onFinish={changefinish}
+          isFirst={questionindex === 0}
+          isLast={
+            activetest &&
+            activetest.data &&
+            questionindex === activetest.data.length - 1
+          }
+          onsaveNext={handlesavenext}
+          onClear={changeclear}
 
-            }
-            onsaveNext={changesavenext}
-          />
-        </div>
-      </>
-    </TestpageContext.Provider>
-  );
-}
+        />
+      </div>
+    </>
+  </TestpageContext.Provider>
+};
 
 export default Test;
+

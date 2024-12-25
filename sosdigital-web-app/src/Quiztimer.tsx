@@ -5,11 +5,16 @@ import { useNavigate } from "react-router-dom";
 
 
 // Timer component
-function Quiztimer(props) {
-  const { activetest, dispatch } = useContext(TestpageContext);  // Destructure activetest and dispatch from context
+function Quiztimer() {
+  // const { activetest, dispatch } = useContext(TestpageContext);  // Destructure activetest and dispatch from context
+  const testPageContext = useContext(TestpageContext);
+  if (testPageContext === null) return;
+
+  const { activetest } = testPageContext;
 
   // State to store the remaining time in seconds
   const [timeLeft, setTimeLeft] = useState(0);
+  const navigator = useNavigate();
 
   // Calculate the initial time difference when the component mounts
   useEffect(() => {
@@ -28,12 +33,6 @@ function Quiztimer(props) {
         // If time is up, clear the interval and clear the active test data
         if (newTimeLeft <= 0) {
           clearInterval(intervalId);
-
-          // Dispatch action to clear the active test data when time runs out
-          if (dispatch) {
-            dispatch({ type: 'CLEAR_ACTIVE_TEST_DATA' });
-            // Clear the test data (set to null, or empty array)
-          }
           navigator("/Studentreport");
         }
       }, 1000);
@@ -41,10 +40,10 @@ function Quiztimer(props) {
       // Cleanup interval on component unmount or when the test changes
       return () => clearInterval(intervalId);
     }
-  }, [activetest, dispatch]);
+  }, [activetest]);
 
   // Format time from seconds to hh:mm:ss
-  const formatTime = (timeInSeconds) => {
+  const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
@@ -69,12 +68,6 @@ function Quiztimer(props) {
     return { color: "black" };
   };
 
-  const navigator = useNavigate();
-  // If activetest or activetest.data is not available, show a fallback message
-  if (timeLeft === 0) {
-    activetest.data.length = null
-
-  }
   return (
     <div>
       <h1 className="Q"> Quiz Timer </h1>
