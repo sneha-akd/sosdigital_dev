@@ -7,15 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 
 function Test(props: {
-  userid: number,
-  testid: number,
-  scheduleid: number
+  userid: number
+  testid: number | undefined
+  scheduleid: number | undefined
   , setfinished: (_: boolean) => void
 }) {
   //const { activetest, testStarted } = useContext(TestpageContext);
   const [activetest, setactivetest] = useState<ActiveTestType | undefined>(undefined);
   const [questionindex, setquestionindex1] = useState(0);
   const [userselection, setuserselection] = useState<(number | undefined)[]>([]);
+  const [userreview, setuserreview] = useState<(boolean | undefined)[]>([]);
+  const [usersaved, setusersaved] = useState<(number | undefined)[]>([]);
+  const [seen, setseen] = useState<(boolean | undefined)[]>([]);
 
   const exported_user_id = 2;
 
@@ -27,14 +30,30 @@ function Test(props: {
       return newdata;
     });
   }
+  const manageseen = (questionindex: number) => {
+    setseen((olddata) => {
+      let newdata = [...olddata];
+      newdata[questionindex] = true;
+      return newdata;
+    });
+  }
+
+  const managesavedanswer = (questionindex: number, answerindex: number | undefined) => {
+    setusersaved((olddata) => {
+      let newdata = [...olddata]
+      newdata[questionindex] = answerindex;
+      return newdata;
+    })
+  }
 
   const managequestionnavigation = (newquestionindex: number) => {
     if (activetest?.data.length && newquestionindex < activetest.data.length - 1 && newquestionindex >= 0) {
+      manageseen(questionindex);
       setquestionindex1(newquestionindex);
     }
   }
 
-  const postanswer = async (answerindex: number | undefined) => {
+  const postanswer = async (answerindex: number | undefined, review: boolean) => {
 
     try {
       const answer_data = {
@@ -43,6 +62,7 @@ function Test(props: {
         test_id: activetest?.test_id,
         data: [
           {
+            review: review,
             answers: answerindex !== undefined ? [activetest?.data[questionindex]?.answers[answerindex]?.id] : [],
             question: activetest?.data[questionindex]?.id,
           },
@@ -131,27 +151,61 @@ function Test(props: {
     }
   }
 
+  const userselectreview = (questionindex: number, review: boolean | undefined) => {
+    setuserreview((olddata) => {
+      let newdata = [...olddata];
+      newdata[questionindex] = review;
+      return newdata;
+    });
+
+  };
+
+
+  // USER ACTION FUNCTION
   const changeclear = () => {
     // Reset selected option for current question
     manageuserselections(questionindex, 0, false);
-    postanswer(undefined);
+    managesavedanswer(questionindex, undefined);
+    userselectreview(questionindex, undefined);
+    postanswer(undefined, false);
   };
 
   const handlesavenext = () => {
     const answerindex: number | undefined = userselection[questionindex];
-    postanswer(answerindex);  // Save the answer before moving to next
+    managesavedanswer(questionindex, answerindex);
+    postanswer(answerindex, false);  // Save the answer before moving to next
     managequestionnavigation(questionindex + 1);
+    userselectreview(questionindex, undefined);
   };
+
+  const handlesavemarkreview = () => {
+    const answerindex: number | undefined = userselection[questionindex];
+    managesavedanswer(questionindex, answerindex);
+    postanswer(answerindex, true);
+    userselectreview(questionindex, true);
+  }
+
+
+
+  const handlereviewandnext = () => {
+    const answerindex: number | undefined = usersaved[questionindex];
+    postanswer(answerindex, true);
+    userselectreview(questionindex, true);
+    managequestionnavigation(questionindex + 1)
+  }
+
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
   const handlenext = () => {
+    manageuserselections(questionindex, 0, false);
     managequestionnavigation(questionindex + 1);
   };
 
   const handleprev = () => {
+    manageuserselections(questionindex, 0, false);
     managequestionnavigation(questionindex - 1);
   };
 
@@ -195,6 +249,7 @@ function Test(props: {
       <div>
         <p> Test Id : {props.testid}</p>
         <p> Schedule Id : {props.scheduleid}</p>
+
         <button
           onClick={() => {
             navigator("/testclock");
@@ -208,6 +263,7 @@ function Test(props: {
         <Question_text questionindex={questionindex} />
         <Answer
           userselection={userselection}
+          usersaved={usersaved}
           onuserselectionchange={handleuserselectionchange}
           questionindex={questionindex}
         />
@@ -223,7 +279,8 @@ function Test(props: {
           }
           onsaveNext={handlesavenext}
           onClear={changeclear}
-
+          onsavereview={handlesavemarkreview}
+          onreviewnext={handlereviewandnext}
         />
       </div>
     </>

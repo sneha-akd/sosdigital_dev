@@ -33,8 +33,8 @@ type activeTestResponseType = {
 type TestclockPropsType = {
   userid: number;
   finished: boolean;
-  settestid: React.Dispatch<React.SetStateAction<number>>;
-  setscheduleid: React.Dispatch<React.SetStateAction<number>>;
+  settestid: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setscheduleid: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 function Testclock(props: TestclockPropsType) {
   const [activetest, setactivetest] = useState<activeTestResponseType>({

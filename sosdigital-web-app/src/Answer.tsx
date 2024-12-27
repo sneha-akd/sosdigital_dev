@@ -27,6 +27,7 @@ function Answer(props: {
   questionindex: number,
   onuserselectionchange: (questionindex: number, answewrindex: number, checked: boolean) => void,
   userselection: (number | undefined)[],
+  usersaved: (number | undefined)[],
 }) {
   const activeTestContext = useContext(TestpageContext);
   // console.log("Answer", activeTestContext);
@@ -54,7 +55,7 @@ function Answer(props: {
                 id={answer.id.toString()}
                 name=""
                 value=""
-                checked={props.userselection[props.questionindex] === index}
+                checked={(props.userselection[props.questionindex] ?? props.usersaved[props.questionindex]) === index}
               />
               <label htmlFor={answer.id.toString()}>
                 <span

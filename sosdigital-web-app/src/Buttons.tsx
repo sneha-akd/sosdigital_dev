@@ -8,6 +8,9 @@ function Buttons(props: {
   isLast: boolean,
   onClear: () => void,
   onsaveNext: () => void,
+  onsavereview: () => void,
+  onreviewnext: () => void,
+
 }) {
   return (
     <div>
@@ -15,10 +18,10 @@ function Buttons(props: {
         <button type="button" className="btn btn-success" onClick={() => props.onsaveNext()}>
           Save & Next
         </button>
-        <button type="button" className="btn btn-warning">
+        <button type="button" className="btn btn-warning" onClick={props.onsavereview}>
           Save & Mark For Review
         </button>
-        <button type="button" className="btn btn-info">
+        <button type="button" className="btn btn-info" onClick={props.onreviewnext}>
           Mark For Review & Next
         </button>
         <button type="button" className="btn btn-light" onClick={props.onClear}>

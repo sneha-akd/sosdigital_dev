@@ -10,8 +10,10 @@ export default function App() {
 
   const [finished, setfinished] = useState(false);
   const [userid, setuserid] = useState(2);
-  const [testid, settestid] = useState(undefined);
-  const [scheduleid, setscheduleid] = useState(undefined);
+  const [testid, settestid] = useState<number | undefined>(undefined);
+  const [scheduleid, setscheduleid] = useState<number | undefined>(undefined);
+
+
 
   return (
     <>

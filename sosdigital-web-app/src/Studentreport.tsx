@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function Studentreport(props: {
   userid: number,
-  scheduleid: number,
+  scheduleid: number|undefined,
 }) {
   const [correctanswer, setcorrectanswer] = useState<{
     attempted: number,
