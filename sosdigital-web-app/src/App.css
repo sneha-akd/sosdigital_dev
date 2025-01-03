@@ -2,27 +2,26 @@
   font-family: sans-serif;
   text-align: center;
 }
+
 .btn {
   margin: 5px;
 }
+
 .count {
   text-align: right;
   float: right;
 }
-.Q {
-  justify-content: right;
-  float: left;
-  font-size: 20px;
-}
+
 .Qtime {
-  float: left;
-  position: relative;
+  text-align: left;
 }
+
 .footer-buttons {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #f8f9fa;  /* Optional: light background for footer */
+  background-color: #f8f9fa;
+  /* Optional: light background for footer */
   padding: 10px 0;
   display: flex;
   justify-content: center;
@@ -33,3 +32,48 @@
   display: flex;
   gap: 10px;
 }
+
+.qpanel-btn {
+  width: 35px;
+  height: 35px;
+  border: 1px solid gray;
+  border-radius:5%;
+}
+
+.btn-answeredreview {
+  background: radial-gradient(circle, blue 0%,rgb(0, 255, 0, 0.4) 70%, rgb(0, 255, 0) );
+  color: white;
+  border-radius: 50%;
+}
+
+.btn-answered {
+  background-color: green;
+  color: white;
+  clip-path: polygon(0% 0%,
+      0% 100%,
+      100% 80%,
+      100% 20%);
+  border-color: rgb(0, 78, 0);
+}
+
+.btn-review {
+  background-color: rgb(83, 49, 231);
+  color: white;
+  border-radius: 50%;
+}
+
+.btn-unanswered {
+  background-color: red;
+  color: white;
+  clip-path: polygon(0% 0%,
+      0% 100%,
+      100% 80%,
+      100% 20%);
+  border-color: rgb(204, 0, 0);
+}
+
+.btn-unseen {
+  background-color: rgba(243, 243, 243);
+  color: black;
+}
+

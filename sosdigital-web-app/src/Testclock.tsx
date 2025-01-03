@@ -31,7 +31,7 @@ type activeTestResponseType = {
 }
 
 type TestclockPropsType = {
-  userid: number;
+  userid: number | undefined;
   finished: boolean;
   settestid: React.Dispatch<React.SetStateAction<number | undefined>>;
   setscheduleid: React.Dispatch<React.SetStateAction<number | undefined>>;
@@ -40,14 +40,16 @@ function Testclock(props: TestclockPropsType) {
   const [activetest, setactivetest] = useState<activeTestResponseType>({
     data: [],
   });
-
   const navigate = useNavigate();
+
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigate("/")}>Home</a> and login to continue</p>;
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
   const fetchInfo = () => {
+    if (props.userid === undefined) return null;
     return fetch(`https://sosdigital.in/dev2_views/active_test/?user_id=${props.userid}`)
       .then((res) => res.json())
       .catch((e) => {

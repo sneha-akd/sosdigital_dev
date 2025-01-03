@@ -1,5 +1,6 @@
 
 
+import MathJaxComponent from "./MathJaxComponent";
 import { TestpageContext } from "./store/testpage-store";
 import { useContext } from "react";
 
@@ -9,15 +10,12 @@ function Question_text(props: {
   const activeTestContext = useContext(TestpageContext);
   let question =
     activeTestContext?.activetest?.data[props.questionindex]?.descr;
+
   return (
     question !== undefined && (
       <div>
-        <p> Question number: {props.questionindex} </p>
-        <p
-          dangerouslySetInnerHTML={{
-            __html: question,
-          }}
-        ></p>
+        <h3> Question number: {props.questionindex + 1} </h3>
+        <MathJaxComponent>{question}</MathJaxComponent>
       </div>
     )
   );
@@ -58,11 +56,7 @@ function Answer(props: {
                 checked={(props.userselection[props.questionindex] ?? props.usersaved[props.questionindex]) === index}
               />
               <label htmlFor={answer.id.toString()}>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: answer.descr,
-                  }}
-                ></span>
+                <MathJaxComponent>{answer.descr}</MathJaxComponent>
               </label>
             </div>
           );

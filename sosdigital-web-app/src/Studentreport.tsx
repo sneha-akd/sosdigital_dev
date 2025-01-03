@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Studentreport(props: {
-  userid: number,
-  scheduleid: number|undefined,
+  userid: number | undefined,
+  scheduleid: number | undefined,
 }) {
   const [correctanswer, setcorrectanswer] = useState<{
     attempted: number,
@@ -14,6 +14,9 @@ function Studentreport(props: {
   } | null>(null);
 
   const navigator = useNavigate();
+
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
+
 
   const fetchInfo = () => {
     fetch(
@@ -42,7 +45,7 @@ function Studentreport(props: {
 
   return (
     <>
-      <button onClick={() => navigator("/testclock")}>Go to Home Page</button>
+      <button onClick={() => navigator("/")}>Go to Home Page</button>
       <div>Quiz Final Result</div>
 
       {correctanswer ? (

@@ -4,13 +4,17 @@ import Answer, { Question_text } from "./Answer";
 import Buttons from "./Buttons";
 import Quiztimer from "./Quiztimer";
 import { useNavigate } from "react-router-dom";
+import Smallbuttons from "./Smallbuttons";
 
+/// https://medium.com/@isurulakr/integrating-mathjax-version-3-in-react-d6fd4c5a8b81
+/// Check this document for MathJax Reload on content change
+/// If possible, we want to restrict the area on which mathjax typeset is done
 
 function Test(props: {
-  userid: number
-  testid: number | undefined
-  scheduleid: number | undefined
-  , setfinished: (_: boolean) => void
+  userid: number | undefined,
+  testid: number | undefined,
+  scheduleid: number | undefined,
+  setfinished: (_: boolean) => void
 }) {
   //const { activetest, testStarted } = useContext(TestpageContext);
   const [activetest, setactivetest] = useState<ActiveTestType | undefined>(undefined);
@@ -19,8 +23,11 @@ function Test(props: {
   const [userreview, setuserreview] = useState<(boolean | undefined)[]>([]);
   const [usersaved, setusersaved] = useState<(number | undefined)[]>([]);
   const [seen, setseen] = useState<(boolean | undefined)[]>([]);
+  const navigator = useNavigate();
 
   const exported_user_id = 2;
+
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
 
   // RESPONSIBILITY FUNCTIONS
   const manageuserselections = (questionindex: number, answerindex: number, checked: boolean) => {
@@ -243,47 +250,51 @@ function Test(props: {
       });
   };
 
-  const navigator = useNavigate();
+
   return activetest && <TestpageContext.Provider value={{ activetest }}>
     <>
-      <div>
-        <p> Test Id : {props.testid}</p>
-        <p> Schedule Id : {props.scheduleid}</p>
+      <div className="">
 
-        <button
-          onClick={() => {
-            navigator("/testclock");
-          }}
-        >
-          Go to Home Page
-        </button>
-      </div>
-      <Quiztimer />
-      <div className="Test">
-        <Question_text questionindex={questionindex} />
-        <Answer
-          userselection={userselection}
-          usersaved={usersaved}
-          onuserselectionchange={handleuserselectionchange}
-          questionindex={questionindex}
-        />
-        <Buttons
-          onNext={handlenext}
-          onPrev={handleprev}
-          onFinish={changefinish}
-          isFirst={questionindex === 0}
-          isLast={
-            activetest &&
-            activetest.data &&
-            questionindex === activetest.data.length - 1
-          }
-          onsaveNext={handlesavenext}
-          onClear={changeclear}
-          onsavereview={handlesavemarkreview}
-          onreviewnext={handlereviewandnext}
-        />
+
+        <Quiztimer />
+
+        <div className="row">
+          <div className="Test col-md-9">
+            <Question_text questionindex={questionindex}
+
+            />
+            <Answer
+              userselection={userselection}
+              usersaved={usersaved}
+              onuserselectionchange={handleuserselectionchange}
+              questionindex={questionindex}
+            />
+            <Buttons
+              onNext={handlenext}
+              onPrev={handleprev}
+              onFinish={changefinish}
+              isFirst={questionindex === 0}
+              isLast={
+                activetest &&
+                activetest.data &&
+                questionindex === activetest.data.length - 1
+              }
+              onsaveNext={handlesavenext}
+              onClear={changeclear}
+              onsavereview={handlesavemarkreview}
+              onreviewnext={handlereviewandnext}
+            />
+          </div>
+          <Smallbuttons
+            usersaved={usersaved}
+            userreview={userreview}
+            seen={seen}
+            onClickHandler={managequestionnavigation}
+          />
+        </div>
       </div>
     </>
+
   </TestpageContext.Provider>
 };
 

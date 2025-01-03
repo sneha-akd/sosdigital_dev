@@ -29,38 +29,38 @@ function Buttons(props: {
         </button>
       </div>
 
-      <footer className="footer-buttons">
-        <div className="button-container">
-          <button
 
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={props.onPrev}
-            disabled={props.isFirst}
-          >
-            <i className="bi bi-chevron-double-left"></i>Previous
-          </button>
-          <button
+      <div className="container mt-5">
+        <button
 
-            type="button"
-            className="btn btn-outline-success"
-            onClick={props.onNext}
-            disabled={props.isLast}
-          >
+          type="button"
+          className="btn btn-outline-primary mx-auto me-2"
+          onClick={props.onPrev}
+          disabled={props.isFirst}
+        >
+          <i className="bi bi-chevron-double-left"></i>Previous
+        </button>
+        <button
 
-            Next
-            <i className="bi bi-chevron-double-right"></i>
-          </button>
+          type="button"
+          className="btn btn-outline-success mx-auto"
+          onClick={props.onNext}
+          disabled={props.isLast}
+        >
 
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            onClick={props.onFinish}
-          >
-            Submit
-          </button>
-        </div>
-      </footer>
+          Next
+          <i className="bi bi-chevron-double-right "></i>
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-outline-danger mx-auto ms-2"
+          onClick={props.onFinish}
+        >
+          Submit
+        </button>
+      </div>
+
     </div >
   );
 }

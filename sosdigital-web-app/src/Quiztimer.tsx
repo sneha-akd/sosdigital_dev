@@ -69,11 +69,10 @@ function Quiztimer() {
   };
 
   return (
-    <div>
-      <h1 className="Q"> Quiz Timer </h1>
-      <h2 className="Qtime" style={getTimerColor()}>
-        {formatTime(timeLeft)}
-      </h2>
+    <div className="">
+      <h3 className="Qtime" style={getTimerColor()}>
+        Quiz Timer {formatTime(timeLeft)}
+      </h3>
     </div>
   );
 
