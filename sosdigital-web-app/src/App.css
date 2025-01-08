@@ -77,3 +77,25 @@
   color: black;
 }
 
+.gradient-background {
+ 
+  background: linear-gradient(300deg, #01b5f1, #bc5565, #d75544);
+  background-size: 190% 190%;
+  animation: gradient-animation 18s ease infinite;
+}
+
+.feature-icon-small {
+  width: 3rem;
+  height: 3rem;
+}
+
+.profile-img {
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+}
+
+.py-5{
+  padding-top: 0;
+  padding-bottom: 0;
+}

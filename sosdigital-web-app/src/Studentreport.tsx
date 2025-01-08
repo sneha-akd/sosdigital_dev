@@ -15,12 +15,9 @@ function Studentreport(props: {
 
   const navigator = useNavigate();
 
-  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
-
-
   const fetchInfo = () => {
     fetch(
-      `https://sosdigital.in/dev2_views/report/?user_id=${props.userid}&schedule_id=${props.scheduleid}`
+      `https://sosdigital.in/borkar/views/report/?user_id=${props.userid}&schedule_id=${props.scheduleid}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -42,6 +39,8 @@ function Studentreport(props: {
       fetchInfo();
     }
   }, [props.userid, props.scheduleid]);
+
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
 
   return (
     <>

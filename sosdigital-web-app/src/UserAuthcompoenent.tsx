@@ -6,7 +6,7 @@ import { useRef } from "react";
 
 
 
-function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.SetStateAction<number | undefined>> }) {
+function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number | undefined) => void }) {
   const [islogged, setislogged] = useState(true);
   const [email, setEmail] = useState('');
   const [fullname, setfullname] = useState('');
@@ -33,7 +33,7 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
     }
 
     try {
-      const response = await fetch('https://sosdigital.in/views/authenticate/', {
+      const response = await fetch('https://sosdigital.in/borkar/views/authenticate/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,17 +46,9 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
 
       if (response.ok) {
         const data = await response.json();
-
         const userid = data.user_id;  // Assume the response contains the user ID
-
-        if (userid) {
-          // Save user ID to localStorage and set state
-          localStorage.setItem("userid", userid.toString());
-          setuserid(userid);
-
-          closeBtnRef.current?.click();
-        }
-
+        manageUserId(userid);
+        closeBtnRef.current?.click();
 
       } else {
         const data = await response.json();
@@ -80,7 +72,7 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
 
     // Send user details to the backend API (Assuming POST /register)
     try {
-      const response = await fetch('https://sosdigital.in/views/register/', {
+      const response = await fetch('https://sosdigital.in/borkar/views/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +106,7 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
     try {
 
       // Correct URL with email appended
-      const url = `https://sosdigital.in/views/resend_validation_email/?email=${email}`;
+      const url = `https://sosdigital.in/borkar/views/resend_validation_email/?email=${email}`;
 
       // Sending a GET request (since you're sending email in the query parameter)
       const response = await fetch(url, {
@@ -133,18 +125,6 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
       alert('Failed to send validation key');
     }
   };
-
-
-
-  /*const handleValidationSubmit = (event) => {
-    event.preventDefault();
-    if (enteredKey === validationKey) {
-      alert('Validation successful, set your password!');
-      // Proceed to set password logic
-    } else {
-      alert('Invalid validation key!');
-    }
-  };*/
 
   const handleresetpassword = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -169,7 +149,7 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
     setError('');
 
     try {
-      const response = await fetch('https://sosdigital.in/views/reset/', {
+      const response = await fetch('https://sosdigital.in/borkar/views/reset/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -197,10 +177,10 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
 
 
   return (
-    <div className="modal fade" id="exampleModal" tabIndex={-1}
+    <div className="modal fade" id="loginModal" tabIndex={-1}
       data-bs-backdrop="static" data-bs-keyboard="false"
       aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-lg modal-fullscreen-sm-down">
         <div className="modal-content">
           <div className="modal-header">
             <div className="d-flex w-100">
@@ -213,77 +193,83 @@ function UserAuthcompoenent({ setuserid }: { setuserid: React.Dispatch<React.Set
             </div>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body d-flex ">
 
+            <img
+              src="https://www.learningspiral.co.in/wp-content/uploads/2021/04/slider.png"
+              className="sFlh5c FyHeAf iPVvYb"
+              style={{ maxWidth: "650px", height: "200px", margin: "1px 0px", width: "400px" }}
+              alt="UCanAssess | Online Examination System | Online Exam Solution"
+              aria-hidden="false"
+            />
+            <div className="flex-grow-1 ms-3">
+              {/* Conditional Rendering for Forms */}
+              {islogged && (
+                <form onSubmit={handleloginsubmit}>
+                  <div className="container">
+                    <h5>Login</h5>
 
+                    <input type="email" id="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm " /><br />
 
-            {/* Conditional Rendering for Forms */}
-            {islogged && (
-              <form onSubmit={handleloginsubmit}>
-                <div className="container">
-                  <h5>Login</h5>
-
-                  <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm" /><br />
-
-                  <input type="password" placeholder="Password" value={password} onChange={(e) => setpassword(e.target.value)} className="form-control form-control-sm" /><br />
-                  <a href="#" onClick={() => { setislogged(false); setShowValidation(true); }}>Forgot Password </a><br />
-                  <p>Not a member? <a href="#" onClick={() => { setislogged(false); }}>Register Now</a></p>
-                  <button type="submit" className="btn btn-primary  mx-auto d-block ">Login</button>
-                </div>
-              </form>
-            )}
-
-            {showValidation && (
-              <>
-                <form onSubmit={handleresetpassword}>
-
-                  <div>
-                    <h5>Validation/Reset Password</h5>
-                    <div className="d-flex mb-3">
-                      <button className="btn btn-light m-0" disabled><i className="bi bi-envelope-fill"></i></button>
-                      <input type="email" id="reset_email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm" />
-                    </div>
-                    <div className="mb-3">
-                      <a href="#"
-                        onClick={handleresendemail}>
-                        Send Validation Key</a></div>
-                    <div className="d-flex mb-3">
-                      <button className="btn my-0 mx-1" disabled><i className="bi bi-lock-fill"></i></button>
-                      <input type="password" placeholder=" password " value={password} required={true} onChange={(e) => setpassword(e.target.value)} className="form-control form-control-sm" /><br />
-                    </div>
-                    <div className="d-flex mb-3">
-                      <button className="btn btn-light m-0" disabled><i className="bi bi-unlock-fill"></i></button>
-                      <input type="password" placeholder=" re-enter password" required={true} value={reenterpassword} onChange={(e) => setreenterpassword(e.target.value)} className="form-control form-control-sm" /><br />
-                    </div>
-                    <div className="d-flex mb-3">
-                      <button className="btn btn-light m-0" disabled><i className="bi bi-key-fill"></i></button>
-                      <input type="validate key" placeholder=" validate key" value={uuid} required={true} onChange={(e) => setUuid(e.target.value)} className="form-control form-control-sm" /><br />
-                    </div>
-                    <button type="submit" className="btn btn-warning  mx-auto d-block">Validate and Set Password</button>
-
+                    <input type="password" id="password" placeholder="Password" value={password} onChange={(e) => setpassword(e.target.value)} className="form-control form-control-sm" /><br />
+                    <a href="#" onClick={() => { setislogged(false); setShowValidation(true); }}>Forgot Password </a><br />
+                    <p>Not a member? <a href="#" onClick={() => { setislogged(false); }}>Register Now</a></p>
+                    <button type="submit" className="btn btn-primary  mx-auto d-block ">Login</button>
                   </div>
                 </form>
+              )}
 
-                {validationMessage && <p className="text-danger">{validationMessage}</p>}
-                {error && <p className="text-danger">{error}</p>}
-              </>
+              {showValidation && (
+                <>
+                  <form onSubmit={handleresetpassword}>
+
+                    <div>
+                      <h5>Validation/Reset Password</h5>
+                      <div className="d-flex mb-3">
+                        <button className="btn btn-light m-0" disabled><i className="bi bi-envelope-fill"></i></button>
+                        <input type="email" id="reset_email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm" />
+                      </div>
+                      <div className="mb-3">
+                        <a href="#"
+                          onClick={handleresendemail}>
+                          Send Validation Key</a></div>
+                      <div className="d-flex mb-3">
+                        <button className="btn my-0 mx-1" disabled><i className="bi bi-lock-fill"></i></button>
+                        <input type="password" placeholder=" password " value={password} required={true} onChange={(e) => setpassword(e.target.value)} className="form-control form-control-sm" /><br />
+                      </div>
+                      <div className="d-flex mb-3">
+                        <button className="btn btn-light m-0" disabled><i className="bi bi-unlock-fill"></i></button>
+                        <input type="password" placeholder=" re-enter password" required={true} value={reenterpassword} onChange={(e) => setreenterpassword(e.target.value)} className="form-control form-control-sm" /><br />
+                      </div>
+                      <div className="d-flex mb-3">
+                        <button className="btn btn-light m-0" disabled><i className="bi bi-key-fill"></i></button>
+                        <input type="validate key" placeholder=" validate key" value={uuid} required={true} onChange={(e) => setUuid(e.target.value)} className="form-control form-control-sm" /><br />
+                      </div>
+                      <button type="submit" className="btn btn-warning  mx-auto d-block">Validate and Set Password</button>
+
+                    </div>
+                  </form>
+
+                  {validationMessage && <p className="text-danger">{validationMessage}</p>}
+                  {error && <p className="text-danger">{error}</p>}
+                </>
 
 
-            )}
+              )}
 
-            {!islogged && !showValidation && (
-              <form onSubmit={handleSubmit}>
-                <div className="container">
-                  <h5>Registration</h5>
-                  <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm" /><br />
+              {!islogged && !showValidation && (
+                <form onSubmit={handleSubmit}>
+                  <div className="container">
+                    <h5>Registration</h5>
+                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control form-control-sm" /><br />
 
-                  <input type="text" placeholder="Full Name" value={fullname} onChange={(e) => setfullname(e.target.value)} className="form-control form-control-sm" /><br />
-                  <p>Back to <a href="#" onClick={() => { setislogged(true); setShowValidation(false) }}>Sign in?</a></p>
-                  <button type="submit" className="btn btn-light w-40 mx-auto d-block ">Register</button>
-                </div>
-              </form>
-            )}
-
+                    <input type="text" placeholder="Full Name" value={fullname} onChange={(e) => setfullname(e.target.value)} className="form-control form-control-sm" /><br />
+                    <p>Back to <a href="#" onClick={() => { setislogged(true); setShowValidation(false) }}>Sign in?</a></p>
+                    <button type="submit" className="btn btn-light w-40 mx-auto d-block ">Register</button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
 
           <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" ref={closeBtnRef} hidden>Close</button>

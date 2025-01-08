@@ -42,15 +42,9 @@ function Testclock(props: TestclockPropsType) {
   });
   const navigate = useNavigate();
 
-  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigate("/")}>Home</a> and login to continue</p>;
-
-  useEffect(() => {
-    fetchInfo();
-  }, []);
-
   const fetchInfo = () => {
     if (props.userid === undefined) return null;
-    return fetch(`https://sosdigital.in/dev2_views/active_test/?user_id=${props.userid}`)
+    return fetch(`https://sosdigital.in/borkar/views/active_test/?user_id=${props.userid}`)
       .then((res) => res.json())
       .catch((e) => {
         console.log("Error while fetching", e);
@@ -83,6 +77,13 @@ function Testclock(props: TestclockPropsType) {
       navigate("/test"); // Navigate to the test route
     }
   };
+
+  useEffect(() => {
+    console.log("useEffect called on moun", props.userid);
+    fetchInfo();
+  }, [props.userid]);
+
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigate("/")}>Home</a> and login to continue</p>;
 
   return (
     <div className="row">

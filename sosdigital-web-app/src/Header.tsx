@@ -1,24 +1,75 @@
-import { NavLink } from "react-router-dom";
+
+import { NavLink, useNavigate } from "react-router-dom";
+
+import UserAuthcompoenent from "./UserAuthcompoenent";
 
 
-function Header() {
-  return <div className="container">
-    <header className="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-      <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+function Header({
+  manageUserId,
+  userid,
+}: {
+  manageUserId: (_userid: number | undefined) => void;
+  userid: number | undefined,
+}) {
 
-        <span className="fs-4">Sos Digital</span>
-      </a>
+  const navigate = useNavigate();
 
-      <ul className="nav nav-pills">
-        <li className="nav-item"> <NavLink className="nav-link" to="/">Home</NavLink></li>
-        <li className="nav-item"><NavLink className="nav-link" to="/testclock">Test</NavLink></li>
-        <li className="nav-item"><NavLink className="nav-link" to="/studentreport">Reports</NavLink></li>
-      </ul>
-    </header>
-  </div>;
+  return (
+    <div className="container">
+      <header className="d-flex flex-wrap justify-content-center py-3 border-bottom">
+        <a
+          href="/"
+          className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+        >
+          <span className="fs-4">Sos Digital</span>
+        </a>
 
+        <ul className="nav nav-pills">
+          <li className="nav-item">
+            <NavLink className="nav-link" to="/">
+              Home
+            </NavLink>
+          </li>
+
+          {userid && <li className="nav-item">
+            <NavLink className="nav-link" to="/testclock">
+              Test
+            </NavLink>
+          </li>}
+          {userid && <li className="nav-item">
+            <NavLink className="nav-link" to="/studentreport">
+              Reports
+            </NavLink>
+          </li>}
+
+          {userid === undefined && <li className="nav-item">
+            <button
+              type="button"
+              className="nav-link"
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              Login
+            </button>
+          </li>}
+          {userid && <li className="nav-item">
+            <button
+              type="button"
+              className="nav-link"
+              onClick={() => {
+                manageUserId(undefined);
+                navigate("/");
+              }}
+            >
+              Logout
+            </button>
+          </li>}
+
+        </ul>
+      </header>
+      <UserAuthcompoenent manageUserId={manageUserId} />
+    </div>
+  );
 }
-
-
 
 export default Header;

@@ -79,7 +79,7 @@ function Test(props: {
       // console.log(answer_data);
       // send request to backend and wait for the response
       const response = await fetch(
-        "https://sosdigital.in/dev_views/response/",
+        "https://sosdigital.in/borkar/views/response/",
         {
           method: "POST",
           // Data will be serialized and sent as json
@@ -136,7 +136,7 @@ function Test(props: {
       // console.log(answer_data1);
       // send request to backend and wait for the response
       const response = await fetch(
-        "https://sosdigital.in/views/test_response/",
+        "https://sosdigital.in/borkar/views/test_response/",
         {
           method: "POST",
           // Data will be serialized and sent as json
@@ -236,7 +236,7 @@ function Test(props: {
 
   const fetchInfo = () => {
     // Dynamically build the URL based on the function's parameters
-    const url = `https://sosdigital.in/views/test_view/?user_id=${props.userid}&test_id=${props.testid}&schedule_id=${props.scheduleid}`;
+    const url = `https://sosdigital.in/borkar/views/test_view/?user_id=${props.userid}&test_id=${props.testid}&schedule_id=${props.scheduleid}`;
 
     return fetch(url)
       .then((res) => res.json())
