@@ -1,6 +1,11 @@
-
-
-
+import loginImg from './images/login.jpg';
+import studentImg from './images/student.jpg';
+import educationImg from './images/Education.jpg';
+import laptomImg from './images/laptop.jpg';
+import education1Img from './images/education1.jpg';
+import classesImg from './images/classes.jpg';
+import onlineTestImg from './images/onlinetest.jpg';
+import validationImg from './images/validation.jpg';
 
 function Homepage() {
   return <>
@@ -8,7 +13,7 @@ function Homepage() {
       <div className="container col-xxl-8 pt-5">
         <div className="row flex-lg-row-reverse align-items-center g-5 pt-5">
           <div className="col-10 col-sm-8 col-lg-6">
-            <img src="src/images/student.jpg" className="d-block mx-lg-auto img-fluid" alt="student.png" height="400"
+            <img src={studentImg} className="d-block mx-lg-auto img-fluid" alt="student.png" height="400"
               loading="lazy" />
           </div>
           <div className="col-lg-6">
@@ -124,16 +129,16 @@ function Homepage() {
             <h5 className="title1 ">Choose your path to success</h5>
             <div className="row justify-content-center">
               <div className="col-auto">
-                <img className="profile-img" src="src/images/Education.jpg" alt="Education.jpg" />
+                <img className="profile-img" src={educationImg} alt="Education.jpg" />
               </div>
               <div className="col-auto">
-                <img className="profile-img" src="src/images/laptop.jpg" alt="laptop.jpg" />
+                <img className="profile-img" src={laptomImg} alt="laptop.jpg" />
               </div>
               <div className="col-auto">
-                <img className="profile-img" src="src/images/education1.jpg" alt="laptop.jpg" />
+                <img className="profile-img" src={education1Img} alt="laptop.jpg" />
               </div>
               <div className="col-auto">
-                <img className="profile-img" src="src/images/classes.jpg" alt="laptop.jpg" />
+                <img className="profile-img" src={classesImg} alt="laptop.jpg" />
               </div>
             </div>
           </div>
@@ -150,21 +155,21 @@ function Homepage() {
     </div>
     <div className="row">
       <div className="col-lg-4">
-        <img className="loginimage " src="src/images/login.jpg" alt="login.jpg" />
+        <img className="loginimage " src={loginImg} alt="login.jpg" />
         <h2 className="fw-normal text"> Credentials Login details </h2>
         <p><li>kindly put usename is borkar3232@gmail.com </li>
           <li>kindly put password is snehaborkar1 </li></p>
         <p><a className="btn btn-outline-secondary" href="#" >View details »</a></p>
       </div>
       <div className="col-lg-4">
-        <img className="loginimage " src="src/images/onlinetest.jpg" alt="onlinetest.jpg" />
+        <img className="loginimage " src={onlineTestImg} alt="onlinetest.jpg" />
 
         <h2 className="fw-normal text">Test page </h2>
         <p>clicked on Enter Button on test page and start your test which you want.</p>
         <p><a className="btn btn-outline-secondary" href="#">View details »</a></p>
       </div>
       <div className="col-lg-4">
-        <img className="loginimage " src="src/images/validation.jpg" alt="validation.jpg" />
+        <img className="loginimage " src={validationImg} alt="validation.jpg" />
 
         <h2 className="fw-normal text">Validation</h2>
         <p >Validation is encyption key Ensure that the API key corresponds to an active and authorized account or service.</p>

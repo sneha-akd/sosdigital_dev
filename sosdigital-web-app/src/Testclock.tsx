@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { app_base_path } from "./App";
 
 function getTarik(dateVar: Date): string {
   return (
@@ -68,13 +69,13 @@ function Testclock(props: TestclockPropsType) {
       // If the current time is greater than the schedule end time, the test has ended
       alert("Test time has ended.");
       // Optional: You could clear the test or navigate elsewhere if needed
-      navigate("/Studentreport"); // or some other route to show that the test is over
+      navigate(`${app_base_path}/Studentreport`); // or some other route to show that the test is over
     } else {
       // If the current time is between startTime and endTime, allow the test to start
       props.settestid(test.test_id);
       props.setscheduleid(test.schedule_id);
 
-      navigate("/test"); // Navigate to the test route
+      navigate(`${app_base_path}/test`); // Navigate to the test route
     }
   };
 
@@ -83,7 +84,7 @@ function Testclock(props: TestclockPropsType) {
     fetchInfo();
   }, [props.userid]);
 
-  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigate("/")}>Home</a> and login to continue</p>;
+  if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigate(`${app_base_path}/`)}>Home</a> and login to continue</p>;
 
   return (
     <div className="row">

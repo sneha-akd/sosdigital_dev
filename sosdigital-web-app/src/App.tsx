@@ -8,7 +8,7 @@ import "./App.css";
 import Homepage from "./Homepage";
 import Header from "./Header";
 
-
+export const app_base_path = "/sosdigital_dev";
 
 
 export default function App() {
@@ -44,13 +44,13 @@ export default function App() {
         <Router>
           < Header manageUserId={manageUserId} userid={userid} />
           <Routes>
-            <Route index element={<Homepage />} />
+            <Route index path={`${app_base_path}/`} element={<Homepage />} />
             <Route
-              path="/testclock"
+              path={`${app_base_path}/testclock`}
               element={<Testclock finished={finished} userid={userid} settestid={settestid} setscheduleid={setscheduleid} />}
             />
-            <Route path="/test" element={<Test setfinished={setfinished} userid={userid} testid={testid} scheduleid={scheduleid} />} />
-            <Route path="/studentreport" element={<Studentreport userid={userid} />} />
+            <Route path={`${app_base_path}/test`} element={<Test setfinished={setfinished} userid={userid} testid={testid} scheduleid={scheduleid} />} />
+            <Route path={`${app_base_path}/studentreport`} element={<Studentreport userid={userid} />} />
           </Routes>
         </Router>
         {/* )} */}

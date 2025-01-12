@@ -2,6 +2,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
 import UserAuthcompoenent from "./UserAuthcompoenent";
+import { app_base_path } from "./App";
 
 
 function Header({
@@ -26,18 +27,18 @@ function Header({
 
         <ul className="nav nav-pills">
           <li className="nav-item">
-            <NavLink className="nav-link" to="/">
+            <NavLink className="nav-link" to={`${app_base_path}/`}>
               Home
             </NavLink>
           </li>
 
           {userid && <li className="nav-item">
-            <NavLink className="nav-link" to="/testclock">
+            <NavLink className="nav-link" to={`${app_base_path}/testclock`}>
               Test
             </NavLink>
           </li>}
           {userid && <li className="nav-item">
-            <NavLink className="nav-link" to="/studentreport">
+            <NavLink className="nav-link" to={`${app_base_path}/studentreport`}>
               Reports
             </NavLink>
           </li>}
@@ -58,7 +59,7 @@ function Header({
               className="nav-link"
               onClick={() => {
                 manageUserId(undefined);
-                navigate("/");
+                navigate(`${app_base_path}/`);
               }}
             >
               Logout
