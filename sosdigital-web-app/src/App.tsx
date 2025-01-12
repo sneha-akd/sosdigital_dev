@@ -50,7 +50,7 @@ export default function App() {
               element={<Testclock finished={finished} userid={userid} settestid={settestid} setscheduleid={setscheduleid} />}
             />
             <Route path="/test" element={<Test setfinished={setfinished} userid={userid} testid={testid} scheduleid={scheduleid} />} />
-            <Route path="/studentreport" element={<Studentreport userid={userid} scheduleid={scheduleid} />} />
+            <Route path="/studentreport" element={<Studentreport userid={userid} />} />
           </Routes>
         </Router>
         {/* )} */}

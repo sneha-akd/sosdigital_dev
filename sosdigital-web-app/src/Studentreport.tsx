@@ -1,23 +1,45 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Studentreport(props: {
-  userid: number | undefined,
-  scheduleid: number | undefined,
-}) {
-  const [correctanswer, setcorrectanswer] = useState<{
+
+type MultiReportResponseType = {
+  data: {
     attempted: number,
     correct: number,
     incorrect: number,
     total: number,
     unattempted: number,
-  } | null>(null);
+    title: string,
+  }[],
+};
+
+function Studentreport(props: {
+  userid: number | undefined,
+}) {
+
+
+  const [reports, setreports] = useState<MultiReportResponseType | null>(null);
+  const [activereportindex, setactivereportindex] = useState<number | null>(null);
 
   const navigator = useNavigate();
 
-  const fetchInfo = () => {
+
+
+
+
+
+  // Effect to trigger fetchInfo when `userid` or `scheduleid` change
+  //   useEffect(() => {
+  //   if (props.userid ) {
+  //     fetchInfo();
+  //   }
+
+  // }, [props.userid]);
+
+
+  const fetchInfo1 = () => {
     fetch(
-      `https://sosdigital.in/borkar/views/report/?user_id=${props.userid}&schedule_id=${props.scheduleid}`
+      `https://sosdigital.in/borkar/views/reports/?user_id=${props.userid}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -26,39 +48,68 @@ function Studentreport(props: {
         return res.json();
       })
       .then((data) => {
-        setcorrectanswer(data);
+        setreports(data);
+
       })
       .catch((e) => {
         console.error("Error fetching data:", e);
       });
   };
+  console.log(reports);
 
-  // Effect to trigger fetchInfo when `userid` or `scheduleid` change
+
   useEffect(() => {
-    if (props.userid && props.scheduleid) {
-      fetchInfo();
+    if (props.userid) {
+      fetchInfo1();
+
     }
-  }, [props.userid, props.scheduleid]);
+
+  }, [props.userid]);
+
+
 
   if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
 
-  return (
-    <>
-      <button onClick={() => navigator("/")}>Go to Home Page</button>
-      <div>Quiz Final Result</div>
+  return (<>
+    <div className="mt-3 ">Quiz Final Result</div>
+    <div className="row  justify-content-center">
+      {reports?.data.map((report, index) => {
+        return <div className=" col-sm-2 mb-3 ms-4">
+          <div className="card">
+            <div className="card-body p-3 ">
+              <h5 className="card-title">Final Report</h5>
 
-      {correctanswer ? (
-        <div>
-          <p>Attempted Questions: {correctanswer.attempted}</p>
-          <p>Correct Answers: {correctanswer.correct}</p>
-          <p>Incorrect Answers: {correctanswer.incorrect}</p>
-          <p>Total Questions: {correctanswer.total}</p>
-          <p>Unattempted Questions: {correctanswer.unattempted}</p>
-        </div>
-      ) : (
-        <div>No data available</div> // Handle case when `correctanswer` is null or empty
-      )}
-    </>
+              <p className="card-text">{report.title}</p>
+
+              <button className="btn btn-primary" onClick={() => {
+                // setShowDetails(!showDetails);
+                setactivereportindex(index);
+              }}>
+                {/* {showDetails  ? "Hide Details" : "Show Details"} */}
+                Show Details
+              </button>
+            </div>
+          </div>
+        </div>;
+      })}
+
+    </div >
+
+    {reports && activereportindex !== null ? (
+      <div>
+        <p>Attempted Questions: {reports?.data[activereportindex]?.attempted}</p>
+        <p>Correct Answers: {reports?.data[activereportindex]?.correct}</p>
+        <p>Incorrect Answers: {reports.data[activereportindex]?.incorrect}</p>
+        <p>Total Questions: {reports.data[activereportindex]?.total}</p>
+        <p>Unattempted Questions: {reports.data[activereportindex]?.unattempted}</p>
+
+      </div>
+    ) : (
+      <div>No data available</div> // Handle case when `correctanswer` is null or empty
+    )
+    }
+
+  </>
   );
 }
 

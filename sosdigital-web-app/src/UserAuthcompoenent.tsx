@@ -3,9 +3,6 @@ import { useState } from "react";
 import { useRef } from "react";
 
 
-
-
-
 function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number | undefined) => void }) {
   const [islogged, setislogged] = useState(true);
   const [email, setEmail] = useState('');
@@ -234,7 +231,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
                           onClick={handleresendemail}>
                           Send Validation Key</a></div>
                       <div className="d-flex mb-3">
-                        <button className="btn my-0 mx-1" disabled><i className="bi bi-lock-fill"></i></button>
+                        <button className="btn  btn-light m-0" disabled><i className="bi bi-lock-fill"></i></button>
                         <input type="password" placeholder=" password " value={password} required={true} onChange={(e) => setpassword(e.target.value)} className="form-control form-control-sm" /><br />
                       </div>
                       <div className="d-flex mb-3">
