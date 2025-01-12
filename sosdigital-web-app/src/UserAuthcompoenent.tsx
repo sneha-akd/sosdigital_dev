@@ -83,7 +83,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
 
 
       if (response.ok) {
-        const data = await response.text();
+        await response.text();
 
         // On successful registration, redirect to the login page
 
@@ -159,7 +159,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
       });
 
       if (response.ok) {
-        const data = await response.text();
+        await response.text();
 
 
       } else {
