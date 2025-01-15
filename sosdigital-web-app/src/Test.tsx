@@ -5,6 +5,7 @@ import Buttons from "./Buttons";
 import Quiztimer from "./Quiztimer";
 import { useNavigate } from "react-router-dom";
 import Smallbuttons from "./Smallbuttons";
+import { app_base_path } from "./App";
 
 /// https://medium.com/@isurulakr/integrating-mathjax-version-3-in-react-d6fd4c5a8b81
 /// Check this document for MathJax Reload on content change
@@ -225,7 +226,7 @@ function Test(props: {
     // await postAllAnswers();
     setactivetest(undefined);
     props.setfinished(true);
-    navigator("/Studentreport");
+    navigator(`${app_base_path}/studentreport`);
 
     postAllAnswers();
   };

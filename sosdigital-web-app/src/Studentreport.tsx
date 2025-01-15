@@ -10,6 +10,7 @@ type MultiReportResponseType = {
     total: number,
     unattempted: number,
     title: string,
+    schedule_id: number,
   }[],
 };
 
@@ -17,25 +18,10 @@ function Studentreport(props: {
   userid: number | undefined,
 }) {
 
-
   const [reports, setreports] = useState<MultiReportResponseType | null>(null);
   const [activereportindex, setactivereportindex] = useState<number | null>(null);
 
   const navigator = useNavigate();
-
-
-
-
-
-
-  // Effect to trigger fetchInfo when `userid` or `scheduleid` change
-  //   useEffect(() => {
-  //   if (props.userid ) {
-  //     fetchInfo();
-  //   }
-
-  // }, [props.userid]);
-
 
   const fetchInfo1 = () => {
     fetch(
@@ -66,7 +52,31 @@ function Studentreport(props: {
 
   }, [props.userid]);
 
-
+  const handleDelete = async (schedule_id: number, index: number) => {
+    try {
+      if (reports) {
+        const updatedReports = { ...reports };
+        updatedReports.data = updatedReports.data.filter((_, i) => i !== index);
+        setreports(updatedReports);
+        setactivereportindex(null);
+      }
+      const response = await fetch(
+        `https://sosdigital.in/borkar/views/report/?user_id=${props.userid}&schedule_id=${schedule_id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      // console.log("request sent", response);
+      if (!response.ok) {
+        // server returned a status code other than 200-299 --> something went wrong
+        // console.log("fetch failed");
+        console.log(await response.text());
+      }
+    } catch (error) {
+      // an error occured
+      console.log("Fetch Error", error);
+    }
+  };
 
   if (props.userid === undefined) return <p>Please select <a href="#" onClick={() => navigator("/")}>Home</a> and login to continue</p>;
 
@@ -81,13 +91,13 @@ function Studentreport(props: {
 
               <p className="card-text">{report.title}</p>
 
+
               <button className="btn btn-primary" onClick={() => {
-                // setShowDetails(!showDetails);
                 setactivereportindex(index);
               }}>
-                {/* {showDetails  ? "Hide Details" : "Show Details"} */}
                 Show Details
               </button>
+              <button onClick={() => { handleDelete(report.schedule_id, index) }} ><i className="bi bi-trash" ></i></button>
             </div>
           </div>
         </div>;
@@ -102,13 +112,11 @@ function Studentreport(props: {
         <p>Incorrect Answers: {reports.data[activereportindex]?.incorrect}</p>
         <p>Total Questions: {reports.data[activereportindex]?.total}</p>
         <p>Unattempted Questions: {reports.data[activereportindex]?.unattempted}</p>
-
       </div>
     ) : (
       <div>No data available</div> // Handle case when `correctanswer` is null or empty
     )
     }
-
   </>
   );
 }
