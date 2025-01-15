@@ -97,7 +97,7 @@ function Studentreport(props: {
               }}>
                 Show Details
               </button>
-              <button onClick={() => { handleDelete(report.schedule_id, index) }} ><i className="bi bi-trash" ></i></button>
+              <button className="btn btn-light btn-sm hover" onClick={() => { handleDelete(report.schedule_id, index) }} ><i className=" bi bi-trash  " ></i></button>
             </div>
           </div>
         </div>;
