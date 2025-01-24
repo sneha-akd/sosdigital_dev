@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { app_base_path } from "./App";
+import { api_url } from "./store/app_consts";
 
 function getTarik(dateVar: Date): string {
   return (
@@ -45,7 +46,7 @@ function Testclock(props: TestclockPropsType) {
 
   const fetchInfo = () => {
     if (props.userid === undefined) return null;
-    return fetch(`https://sosdigital.in/borkar/views/active_test/?user_id=${props.userid}`)
+    return fetch(`${api_url}/views/active_test/?user_id=${props.userid}`)
       .then((res) => res.json())
       .catch((e) => {
         console.log("Error while fetching", e);

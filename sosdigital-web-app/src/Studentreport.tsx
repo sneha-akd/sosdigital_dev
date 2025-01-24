@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { api_url } from "./store/app_consts";
 
 
 type MultiReportResponseType = {
@@ -25,7 +26,7 @@ function Studentreport(props: {
 
   const fetchInfo1 = () => {
     fetch(
-      `https://sosdigital.in/borkar/views/reports/?user_id=${props.userid}`
+      `${api_url}/views/reports/?user_id=${props.userid}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -61,7 +62,7 @@ function Studentreport(props: {
         setactivereportindex(null);
       }
       const response = await fetch(
-        `https://sosdigital.in/borkar/views/report/?user_id=${props.userid}&schedule_id=${schedule_id}`,
+        `${api_url}/views/report/?user_id=${props.userid}&schedule_id=${schedule_id}`,
         {
           method: "DELETE",
         }

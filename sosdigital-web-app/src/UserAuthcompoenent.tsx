@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useRef } from "react";
+import { api_url } from "./store/app_consts";
 
 
 function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number | undefined) => void }) {
@@ -30,7 +31,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
     }
 
     try {
-      const response = await fetch('https://sosdigital.in/borkar/views/authenticate/', {
+      const response = await fetch(`${api_url}/views/authenticate/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
 
     // Send user details to the backend API (Assuming POST /register)
     try {
-      const response = await fetch('https://sosdigital.in/borkar/views/register/', {
+      const response = await fetch(`${api_url}/views/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
     try {
 
       // Correct URL with email appended
-      const url = `https://sosdigital.in/borkar/views/resend_validation_email/?email=${email}`;
+      const url = `${api_url}/views/resend_validation_email/?email=${email}`;
 
       // Sending a GET request (since you're sending email in the query parameter)
       const response = await fetch(url, {
@@ -146,7 +147,7 @@ function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number |
     setError('');
 
     try {
-      const response = await fetch('https://sosdigital.in/borkar/views/reset/', {
+      const response = await fetch(`${api_url}/views/reset/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
