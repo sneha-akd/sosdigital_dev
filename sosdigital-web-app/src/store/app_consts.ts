@@ -1,0 +1,1 @@
+export const api_url = "https://borkar.sosdigital.in/api";

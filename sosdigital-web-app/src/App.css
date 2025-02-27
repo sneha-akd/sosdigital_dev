@@ -1,0 +1,120 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.btn {
+  margin: 5px;
+}
+
+.count {
+  text-align: right;
+  float: right;
+}
+
+.Qtime {
+  text-align: left;
+}
+
+.footer-buttons {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  /* Optional: light background for footer */
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.qpanel-btn {
+  width: 35px;
+  height: 35px;
+  border: 1px solid gray;
+  border-radius:5%;
+}
+
+.btn-answeredreview {
+  background: radial-gradient(circle, blue 0%,rgb(0, 255, 0, 0.4) 70%, rgb(0, 255, 0) );
+  color: white;
+  border-radius: 50%;
+}
+
+.btn-answered {
+  background-color: green;
+  color: white;
+  clip-path: polygon(0% 0%,
+      0% 100%,
+      100% 80%,
+      100% 20%);
+  border-color: rgb(0, 78, 0);
+}
+
+.btn-review {
+  background-color: rgb(83, 49, 231);
+  color: white;
+  border-radius: 50%;
+}
+
+.btn-unanswered {
+  background-color: red;
+  color: white;
+  clip-path: polygon(0% 0%,
+      0% 100%,
+      100% 80%,
+      100% 20%);
+  border-color: rgb(204, 0, 0);
+}
+
+.btn-unseen {
+  background-color: rgba(243, 243, 243);
+  color: black;
+}
+
+.gradient-background {
+ 
+  background: linear-gradient(300deg, #01b5f1, #bc5565, #d75544);
+  background-size: 190% 190%;
+  animation: gradient-animation 18s ease infinite;
+}
+
+.feature-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+}
+
+.profile-img {
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+}
+
+.py-5{
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.loginimage{
+  height:200px;
+  width:200px;
+  
+}
+.text{
+  font-size: 20px;
+ 
+}
+.word{
+  font-size: 20px;
+}
+.card1{
+  margin-left :30px;
+  
+}
+
+
