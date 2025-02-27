@@ -6,10 +6,10 @@ import { api_url } from "./store/app_consts";
 
 function UserAuthcompoenent({ manageUserId }: { manageUserId: (_userid: number | undefined) => void }) {
   const [islogged, setislogged] = useState(true);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('borkar3232@gmail.com');
   const [fullname, setfullname] = useState('');
   const [error, setError] = useState('');
-  const [password, setpassword] = useState('');
+  const [password, setpassword] = useState('snehaborkar1');
   const [reenterpassword, setreenterpassword] = useState('');
   const [showValidation, setShowValidation] = useState(false);
   const [uuid, setUuid] = useState('');
